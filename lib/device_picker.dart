@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dart_chromecast/casting/cast_device.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chromecast_example/service_discovery.dart';
@@ -19,6 +21,7 @@ class DevicePicker extends StatefulWidget {
 class _DevicePickerState extends State<DevicePicker> {
 
   List<CastDevice> _devices = [];
+  List<StreamSubscription> _streamSubscriptions = [];
 
   void initState() {
     super.initState();
@@ -28,11 +31,31 @@ class _DevicePickerState extends State<DevicePicker> {
     _updateDevices();
   }
 
+  _deviceDidUpdate(CastDevice device) {
+    // this device did update, we need to trigger setState
+    setState(() => {});
+  }
+
+  CastDevice _deviceByName(String name) {
+    return _devices.firstWhere((CastDevice d) => d.name == name, orElse: () => null);
+  }
+
+  CastDevice _castDeviceFromServiceInfo(ServiceInfo serviceInfo) {
+    CastDevice castDevice = CastDevice(name: serviceInfo.name, type: serviceInfo.type, host: serviceInfo.hostName, port: serviceInfo.port);
+    _streamSubscriptions.add(
+        castDevice.changes.listen((_) => _deviceDidUpdate(castDevice))
+    );
+    return castDevice;
+  }
+
   _updateDevices() {
-    // No: not good!
-    // We do want to cache the found devices...
+    // probably a new service was discovered, so add the new device to the list.
     _devices = widget.serviceDiscovery.foundServices.map((ServiceInfo serviceInfo) {
-      return CastDevice(name: serviceInfo.name, type: serviceInfo.type, host: serviceInfo.host, port: serviceInfo.port);
+      CastDevice device = _deviceByName(serviceInfo.name);
+      if (null == device) {
+        device = _castDeviceFromServiceInfo(serviceInfo);
+      }
+      return device;
     }).toList();
   }
 
@@ -43,6 +66,8 @@ class _DevicePickerState extends State<DevicePicker> {
       onTap: () {
         if (null != widget.onDevicePicked) {
           widget.onDevicePicked(castDevice);
+          // clean up steam listeners
+          _streamSubscriptions.forEach((StreamSubscription subscription) => subscription.cancel());
           Navigator.of(context).pop();
         }
       },

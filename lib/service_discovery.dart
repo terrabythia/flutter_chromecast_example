@@ -13,7 +13,6 @@ class ServiceDiscovery extends ChangeNotifier {
             onDiscoveryStopped: () => {},
             onDiscovered: (ServiceInfo serviceInfo) => {},
             onResolved: (ServiceInfo serviceInfo) {
-              // prevent duplicates
               print('found device ${serviceInfo.toString()}');
               foundServices.add(serviceInfo);
               notifyChange();
@@ -25,6 +24,10 @@ class ServiceDiscovery extends ChangeNotifier {
 
   startDiscovery() {
     _flutterMdnsPlugin.startDiscovery('_googlecast._tcp');
+  }
+
+  stopDiscovery() {
+    _flutterMdnsPlugin.stopDiscovery();
   }
 
 }
