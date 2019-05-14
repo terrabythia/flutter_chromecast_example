@@ -1,5 +1,6 @@
 name: flutter_chromecast_example
-description: A new Flutter project.
+version: 0.0.1
+description: An example implementation of the flutter_mdsn_plugin and the dart_chromecast package
 
 dependencies:
   flutter:
