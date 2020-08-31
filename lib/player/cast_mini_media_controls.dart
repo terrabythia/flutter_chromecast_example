@@ -34,9 +34,11 @@ class _CastMiniMediaControlsState extends State<CastMiniMediaControls> {
   }
 
   _mediaStatusChanged(CastMediaStatus mediaStatus) {
-    setState(() {
-      _mediaStatus = mediaStatus;
-    });
+    if (this.mounted) {
+      setState(() {
+        _mediaStatus = mediaStatus;
+      });
+    }
   }
 
   void _openExtendedMediaControls() {
