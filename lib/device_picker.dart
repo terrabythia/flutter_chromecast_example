@@ -7,19 +7,16 @@ import 'package:flutter_mdns_plugin/flutter_mdns_plugin.dart';
 import 'package:observable/observable.dart';
 
 class DevicePicker extends StatefulWidget {
-
   final ServiceDiscovery serviceDiscovery;
   final Function(CastDevice) onDevicePicked;
 
-  DevicePicker({ this.serviceDiscovery, this.onDevicePicked });
+  DevicePicker({this.serviceDiscovery, this.onDevicePicked});
 
   @override
   _DevicePickerState createState() => _DevicePickerState();
-
 }
 
 class _DevicePickerState extends State<DevicePicker> {
-
   List<CastDevice> _devices = [];
   List<StreamSubscription> _streamSubscriptions = [];
 
@@ -37,20 +34,25 @@ class _DevicePickerState extends State<DevicePicker> {
   }
 
   CastDevice _deviceByName(String name) {
-    return _devices.firstWhere((CastDevice d) => d.name == name, orElse: () => null);
+    return _devices.firstWhere((CastDevice d) => d.name == name,
+        orElse: () => null);
   }
 
   CastDevice _castDeviceFromServiceInfo(ServiceInfo serviceInfo) {
-    CastDevice castDevice = CastDevice(name: serviceInfo.name, type: serviceInfo.type, host: serviceInfo.hostName, port: serviceInfo.port);
-    _streamSubscriptions.add(
-        castDevice.changes.listen((_) => _deviceDidUpdate(castDevice))
-    );
+    CastDevice castDevice = CastDevice(
+        name: serviceInfo.name,
+        type: serviceInfo.type,
+        host: serviceInfo.address,
+        port: serviceInfo.port);
+    _streamSubscriptions
+        .add(castDevice.changes.listen((_) => _deviceDidUpdate(castDevice)));
     return castDevice;
   }
 
   _updateDevices() {
     // probably a new service was discovered, so add the new device to the list.
-    _devices = widget.serviceDiscovery.foundServices.map((ServiceInfo serviceInfo) {
+    _devices =
+        widget.serviceDiscovery.foundServices.map((ServiceInfo serviceInfo) {
       CastDevice device = _deviceByName(serviceInfo.name);
       if (null == device) {
         device = _castDeviceFromServiceInfo(serviceInfo);
@@ -67,7 +69,8 @@ class _DevicePickerState extends State<DevicePicker> {
         if (null != widget.onDevicePicked) {
           widget.onDevicePicked(castDevice);
           // clean up steam listeners
-          _streamSubscriptions.forEach((StreamSubscription subscription) => subscription.cancel());
+          _streamSubscriptions.forEach(
+              (StreamSubscription subscription) => subscription.cancel());
           Navigator.of(context).pop();
         }
       },

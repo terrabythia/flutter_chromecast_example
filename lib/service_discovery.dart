@@ -2,7 +2,6 @@ import 'package:flutter_mdns_plugin/flutter_mdns_plugin.dart';
 import 'package:observable/observable.dart';
 
 class ServiceDiscovery extends ChangeNotifier {
-
   FlutterMdnsPlugin _flutterMdnsPlugin;
   List<ServiceInfo> foundServices = [];
 
@@ -16,10 +15,7 @@ class ServiceDiscovery extends ChangeNotifier {
               print('found device ${serviceInfo.toString()}');
               foundServices.add(serviceInfo);
               notifyChange();
-            }
-        )
-    );
-
+            }));
   }
 
   startDiscovery() {
@@ -29,5 +25,4 @@ class ServiceDiscovery extends ChangeNotifier {
   stopDiscovery() {
     _flutterMdnsPlugin.stopDiscovery();
   }
-
 }
