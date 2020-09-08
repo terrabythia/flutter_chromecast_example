@@ -25,7 +25,7 @@ class _DevicePickerState extends State<DevicePicker> {
 
   void initState() {
     super.initState();
-    widget.serviceDiscovery.changes.listen((List<ChangeRecord> _) {
+    widget?.serviceDiscovery?.changes?.listen((List<ChangeRecord> _) {
       _updateDevices();
     });
     _updateDevices();
