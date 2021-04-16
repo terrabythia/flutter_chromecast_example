@@ -1,3 +1,5 @@
+### ! IMPORTANT: this example is not maintained and will not be upgraded along with Flutter updates. This means that this example will not word out of the box, but inspecting the code yourself can still give you an idea on how to implement both packages yourself.
+
 # flutter_chromecast_example
 
 Example of an implementation of your iOS or Android device as a ChromeCast sender. Uses [flutter_mdns_plugin](https://github.com/terrabythia/flutter_mdns_plugin) for discovering the ChromeCast devices (because this cannot be done purely in Dart) and uses [dart_chromecast](https://github.com/terrabythia/dart_chromecast) to communicate with a connected ChromeCast (purely in Dart).
